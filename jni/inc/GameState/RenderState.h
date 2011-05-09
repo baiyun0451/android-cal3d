@@ -137,60 +137,59 @@ static float getTime()
 }
 void RenderState::onIdle()
 {
-  // get the current tick value
-  unsigned int tick;
-  tick = getTime();
+    // get the current tick value
+    unsigned int tick;
+    tick = getTime();
 
-  // calculate the amount of elapsed seconds
-  float elapsedSeconds;
-  elapsedSeconds = (float)(tick - m_lastTick)/1000.0f;
+    // calculate the amount of elapsed seconds
+    float elapsedSeconds;
+    elapsedSeconds = (float)(tick - m_lastTick)/1000.0f;
 
-  // adjust fps counter
-  m_fpsDuration += elapsedSeconds;
-  if(m_fpsDuration >= 1.0f)
-  {
-    m_fps = (int)((float)m_fpsFrames / m_fpsDuration);
-    m_fpsDuration = 0.0f;
-    m_fpsFrames = 0;
-  }
+    // adjust fps counter
+    m_fpsDuration += elapsedSeconds;
+    if(m_fpsDuration >= 1.0f)
+    {
+        m_fps = (int)((float)m_fpsFrames / m_fpsDuration);
+        m_fpsDuration = 0.0f;
+        m_fpsFrames = 0;
+    }
 
-	static float start;
-	static float firstTime, lastTime;
-	struct timespec now;
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	start = getTime();
+    static float start;
+    static float firstTime, lastTime;
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    start = getTime();
 
-	static bool bFirst = true;
-	if (bFirst) {
-		firstTime = start;
-	}
-	else {
-		lastTime = start;
-	}
+    static bool bFirst = true;
+    if (bFirst) {
+        firstTime = start;
+    }
+    else {
+        lastTime = start;
+    }
 
-  // update the current model
-  if(!m_bPaused)
-  {
-		//for (int i = 0; i < 10; i++)
-			m_vectorModel[m_currentModel]->onUpdate(elapsedSeconds);
-  }
+    // update the current model
+    if(!m_bPaused)
+    {
+        //for (int i = 0; i < 10; i++)
+            m_vectorModel[m_currentModel]->onUpdate(elapsedSeconds);
+    }
 
-	float stop = getTime();
+    float stop = getTime();
 
-	stop -= start;
-	static float cumul = 0;
-	cumul += stop;
+    stop -= start;
+    static float cumul = 0;
+    cumul += stop;
 
-	if (!bFirst) {
-		m_averageCPUTime = cumul / float(lastTime - firstTime) * 100;
-	}
-	bFirst = false;
+    if (!bFirst) {
+        m_averageCPUTime = cumul / float(lastTime - firstTime) * 100;
+    }
+    bFirst = false;
     m_lastTick = tick;
 }
 void RenderState::onRender()
 {
     onIdle();
-	//LOG("Java_com_qualcomm_QCARSamples_ImageTargets_GLRenderer_renderFrame");
 
     // clear all the buffers
     glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
