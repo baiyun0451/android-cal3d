@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := Cal3DNative
-LOCAL_SRC_FILES = ../obj/libCal3DNative.so
+LOCAL_SRC_FILES = ../Cal3dNative/$(TARGET_ARCH_ABI)/libCal3DNative.so
 include $(PREBUILT_SHARED_LIBRARY)
 LOCAL_EXPORT_C_INCLUDES := cal3d
 
