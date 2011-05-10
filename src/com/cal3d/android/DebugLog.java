@@ -1,22 +1,11 @@
-/*==============================================================================
-            Copyright (c) 2010 QUALCOMM Incorporated.
-            All Rights Reserved.
-            Qualcomm Confidential and Proprietary
-==============================================================================*/
-
 package com.cal3d.android;
 
 import android.util.Log;
 
-/** DebugLog is a support class for the QCAR samples applications.
- * 
- *  Exposes functionality for logging.
- *  
- * */
 
 public class DebugLog
 {
-    private static final String LOGTAG = "QCAR";
+    private static final String LOGTAG = "Cal3D-Native";
 
     /** Logging functions to generate ADB logcat messages. */
 

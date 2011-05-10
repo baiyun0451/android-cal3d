@@ -46,8 +46,12 @@ protected:
   bool m_bLight;
   float m_actionTimespan[2];
   float m_nextTimespan;
-  Sprite * mLodBase;
-  Sprite * mLodLevel;
+  Sprite * mSpriteLodBase;
+  Sprite * mSpriteLodLevel;
+  Sprite * mSpriteBaseMenu;
+  Sprite * mSpriteWireFrame;
+  Sprite * mSpriteBLight;
+  Sprite * mSpriteBSkeleton;
 
 // constructors/destructor
 public:

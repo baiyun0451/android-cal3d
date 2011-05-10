@@ -390,7 +390,6 @@ void Model::renderMesh(bool bWireframe, bool bLight)
   {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-
   }
 
   // we will use vertex arrays, so enable them
@@ -484,9 +483,11 @@ void Model::renderMesh(bool bWireframe, bool bLight)
         }
 
         // draw the submesh
-
+        if(bWireframe)
+            glDrawElements(GL_LINES, faceCount * 3, GL_UNSIGNED_SHORT, &meshFaces[0][0]);
+        else
         //if(sizeof(CalIndex)==2)
-			  glDrawElements(GL_TRIANGLES, faceCount * 3, GL_UNSIGNED_SHORT, &meshFaces[0][0]);
+            glDrawElements(GL_TRIANGLES, faceCount * 3, GL_UNSIGNED_SHORT, &meshFaces[0][0]);
         //else
 		//	  glDrawElements(GL_TRIANGLES, faceCount * 3, GL_UNSIGNED_INT, &meshFaces[0][0]);
 
@@ -591,7 +592,7 @@ void Model::onRender()
   //m_calModel->getSpringSystem()->setForceVector(CalVector(0.0f,0.0f,0.0f));
   //m_calModel->getSpringSystem()->setCollisionDetection(true);
 
-  renderMesh(false, true);
+  renderMesh(theMenu.isWireframe(), theMenu.isLight());
 
   // clear global OpenGL states
   glDisable(GL_DEPTH_TEST);

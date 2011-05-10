@@ -480,7 +480,7 @@ else
     {
       // calculate new angles
       m_twistAngle += (float)(x - m_mouseX);
-      m_tiltAngle += (float)(y - m_mouseY);
+      m_tiltAngle -= (float)(y - m_mouseY);
     }
 
     // update distance
@@ -557,7 +557,7 @@ void Demo::onRender()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // render menu
-  //theMenu.onRender();
+  theMenu.onRender();
 
   // render logo
   mLogoSprite->onRender();
