@@ -1,5 +1,6 @@
 #include "RenderState.h"
 #include "demo.h"
+#include "ARGameProgram.h"
 
 enum TouchMode {DOWN = 0,UP = 1,MOVE = 2,CANCEL = 3,OUTSIDE = 4,POINTER_DOWN= 5,POINTER_UP = 6};
 
@@ -35,6 +36,7 @@ void RenderState::onRender()
 
 bool RenderState::onTouch(float x,float y,int touchMode,int pointerID,int pointerCount)
 {
+    y = Program::getInstance()->mHeight - y;
     if(touchMode == POINTER_DOWN)
     {
         theDemo.onMouseButtonUp(0,x,y);

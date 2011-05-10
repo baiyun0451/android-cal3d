@@ -69,7 +69,7 @@ public class Cal3DActivity extends Activity
         ApplicationInfo appInfo = getApplication().getApplicationInfo();
 		SetReadPath(appInfo.dataDir + "/files/");
 		
-        //copyResourceToExternal();
+        copyResourceToExternal();
 
         // Update the application status to start initializing application
         updateApplicationStatus(APPSTATUS_INIT_APP);
@@ -253,8 +253,13 @@ public class Cal3DActivity extends Activity
 					DebugLog.LOGI("Creating " + name);
 					{
 						File file = new File(name);
-
+						
 						// Create any directories and files
+						if(file.exists())
+						{
+							DebugLog.LOGI("File already exist, operation skipped");
+							continue;
+						}
 						file.getParentFile().mkdirs();
 						file.createNewFile();
 

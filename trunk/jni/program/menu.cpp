@@ -218,28 +218,69 @@ bool Menu::onInit(int width, int height)
   if(!theDemo.loadTexture(strFilename, m_lodTextureId)) return false;
 
     {
-      float pos [] = {m_lodX, m_lodY};
-      float size [] = {256,32};
-      mLodBase = new Sprite(pos,size, m_lodTextureId);
-      float * tempCoord = mLodBase->getTextureCoord();
-      tempCoord[0] = 0.0f; tempCoord[1] = 1.0f;
-      tempCoord[2] = 1.0f; tempCoord[3] = 1.0f;
-      tempCoord[4] = 0.0f; tempCoord[5] = 0.5f;
-      tempCoord[6] = 1.0f; tempCoord[7] = 0.5f;
+        float pos [] = {m_lodX, m_lodY};
+        float size [] = {256,32};
+        mSpriteLodBase = new Sprite(pos,size, m_lodTextureId);
+        float * tempCoord = mSpriteLodBase->getTextureCoord();
+        tempCoord[0] = 0.0f; tempCoord[1] = 1.0f;
+        tempCoord[2] = 1.0f; tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.0f; tempCoord[5] = 0.5f;
+        tempCoord[6] = 1.0f; tempCoord[7] = 0.5f;
     }
 
 
     {
-      float lodLevel = theDemo.getModel()->getLodLevel();
-      float pos [] = {m_lodX + 247 - (int)(lodLevel * 200), m_lodY};
-      float size [] = {256 - (247 - (int)(lodLevel * 200)), 32};
-      mLodLevel = new Sprite(pos,size,m_lodTextureId);
-      float * tempCoord = mLodLevel->getTextureCoord();
-      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
-      tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
-      tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
-      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
+        float lodLevel = theDemo.getModel()->getLodLevel();
+        float pos [] = {m_lodX + 247 - (int)(lodLevel * 200), m_lodY};
+        float size [] = {256 - (247 - (int)(lodLevel * 200)), 32};
+        mSpriteLodLevel = new Sprite(pos,size,m_lodTextureId);
+        float * tempCoord = mSpriteLodLevel->getTextureCoord();
+        tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
+        tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
+        tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
+        tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
+    }
 
+    {
+        float pos [] = {m_menuX,m_menuY};
+        float size [] = {128,256};
+        mSpriteBaseMenu = new Sprite(pos,size,m_textureId);
+        float * tempCoord = mSpriteBaseMenu->getTextureCoord();
+        tempCoord[0] = 0.5f;    tempCoord[1] = 1.0f;
+        tempCoord[2] = 1.0f;    tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.5f;    tempCoord[5] = 0.0f;
+        tempCoord[6] = 1.0f;    tempCoord[7] = 0.0f;
+    }
+    {
+        float pos [] = {m_menuX + 32,m_menuY};
+        float size [] = {32,35};
+        mSpriteWireFrame = new Sprite(pos,size,m_textureId);
+        float * tempCoord = mSpriteWireFrame->getTextureCoord();
+        tempCoord[0] = 0.125f;  tempCoord[1] = 1.0f;
+        tempCoord[2] = 0.25f;   tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.125f;  tempCoord[5] = 1.0f - 35.0f / 256.0f;
+        tempCoord[6] = 0.25f;   tempCoord[7] = 1.0f - 35.0f / 256.0f;
+    }
+
+    {
+        float pos [] = {m_menuX + 64,m_menuY};
+        float size [] = {32,35};
+        mSpriteBLight = new Sprite(pos,size,m_textureId);
+        float * tempCoord = mSpriteBLight->getTextureCoord();
+        tempCoord[0] = 0.25f;   tempCoord[1] = 1.0f;
+        tempCoord[2] = 0.375f;  tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.25f;   tempCoord[5] = 1.0f - 35.0f / 256.0f;
+        tempCoord[6] = 0.375f;  tempCoord[7] = 1.0f - 35.0f / 256.0f;
+    }
+    {
+        float pos [] = {m_menuX,m_menuY};
+        float size [] = {32,35};
+        mSpriteBSkeleton = new Sprite(pos,size,m_textureId);
+        float * tempCoord = mSpriteBSkeleton->getTextureCoord();
+        tempCoord[0] = 0.0f;    tempCoord[1] = 1.0f;
+        tempCoord[2] = 0.125f;  tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - 35.0f / 256.0f;
+        tempCoord[6] = 0.125;   tempCoord[7] = 1.0f - 35.0f / 256.0f;
     }
 
   return true;
@@ -393,22 +434,20 @@ void Menu::onRender()
   int state;
   state = theDemo.getModel()->getState();
 
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, m_textureId);
+  //glEnable(GL_TEXTURE_2D);
+  //glBindTexture(GL_TEXTURE_2D, m_textureId);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  mSpriteBaseMenu->onRender();
+
+  if(m_bLight)
+    mSpriteBLight->onRender();
+  if(m_bWireframe)
+    mSpriteWireFrame->onRender();
+  if(m_bSkeleton)
+    mSpriteBSkeleton->onRender();
  /*
   glBegin(GL_QUADS);
-    // render the base menu
-    glTexCoord2f(0.5f, 1.0f);
-    glVertex2i(m_menuX, m_menuY);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(m_menuX + 128, m_menuY);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(m_menuX + 128, m_menuY + 256);
-    glTexCoord2f(0.5f, 0.0f);
-    glVertex2i(m_menuX, m_menuY + 256);
-
     // render all active states
     int startY, endY;
     startY = MENUITEM_Y[state];
@@ -453,42 +492,6 @@ void Menu::onRender()
       glVertex2i(m_menuX, m_menuY + endY);
     }
 
-    if(m_bSkeleton!=0)
-    {
-      glTexCoord2f(0.0f, 1.0f);
-      glVertex2i(m_menuX, m_menuY);
-      glTexCoord2f(0.125f, 1.0f);
-      glVertex2i(m_menuX + 32, m_menuY);
-      glTexCoord2f(0.125f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 32, m_menuY + 35);
-      glTexCoord2f(0.0f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX, m_menuY + 35);
-    }
-
-    if(m_bWireframe)
-    {
-      glTexCoord2f(0.125f, 1.0f);
-      glVertex2i(m_menuX + 32, m_menuY);
-      glTexCoord2f(0.25f, 1.0f);
-      glVertex2i(m_menuX + 64, m_menuY);
-      glTexCoord2f(0.25f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 64, m_menuY + 35);
-      glTexCoord2f(0.125f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 32, m_menuY + 35);
-    }
-
-    if(m_bLight)
-    {
-      glTexCoord2f(0.25f, 1.0f);
-      glVertex2i(m_menuX + 64, m_menuY);
-      glTexCoord2f(0.375f, 1.0f);
-      glVertex2i(m_menuX + 96, m_menuY);
-      glTexCoord2f(0.375f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 96, m_menuY + 35);
-      glTexCoord2f(0.25f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 64, m_menuY + 35);
-    }
-
     if(m_nextTimespan > 0.0f)
     {
       glTexCoord2f(0.375f, 1.0f);
@@ -508,18 +511,20 @@ void Menu::onRender()
   lodLevel = theDemo.getModel()->getLodLevel();
 
   glColor4f(1.0f, 1.0f, 1.0f,1.0f);
-    mLodBase->onRender();
+
+    mSpriteLodBase->onRender();
     {
       float lodLevel = theDemo.getModel()->getLodLevel();
-      mLodLevel->setSize(256 - (247 - (int)(lodLevel * 200)), 32);
-      mLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
-      float * tempCoord = mLodLevel->getTextureCoord();
-      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
-      tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
-      tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
-      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
+      mSpriteLodLevel->setSize(256 - (247 - (int)(lodLevel * 200)), 32);
+      mSpriteLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
+      float * tempCoord = mSpriteLodLevel->getTextureCoord();
 
-      mLodLevel->onRender();
+      tempCoord[2] = (247 - lodLevel * 200) / 256.0f;       tempCoord[3] = 0.5f;
+      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.5f;
+      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.0f;
+      tempCoord[4] = 1.0f;                                  tempCoord[5] = 0.0f;
+
+      mSpriteLodLevel->onRender();
     }
 
 /*
@@ -573,6 +578,12 @@ void Menu::onResize(int width, int height)
 
 void Menu::onShutdown()
 {
+    delete mSpriteBaseMenu;
+    delete mSpriteBLight;
+    delete mSpriteBSkeleton;
+    delete mSpriteLodBase;
+    delete mSpriteLodLevel;
+    delete mSpriteWireFrame;
 }
 
 //----------------------------------------------------------------------------//
