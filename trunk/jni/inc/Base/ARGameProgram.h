@@ -5,6 +5,6 @@ class Program : public NativeProgram
 {	public:		static Program * getInstance();
 		void RenderFrame();		bool InitializeProgram(JNIEnv* env, jobject obj, int w, int h);		bool DeinitializeProgram();		bool InitRenderer();		bool DeinitRenderer();		bool OnRendererChanged(int w, int h);		bool OnResume();		bool OnPause();
 		bool OnTouch(float x,float y,int touchMode,int pointerID,int pointerCount);	private:		Program();		~Program();		static Program * mInstance;		GameStateManager * mGameStateManager;		friend NativeProgram * NewEntity();
-};Program * Program::mInstance = NULL;NativeProgram * NewEntity(){	return Program::getInstance();}
+};NativeProgram * NewEntity();
 #endif
 

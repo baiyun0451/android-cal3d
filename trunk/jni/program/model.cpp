@@ -129,7 +129,7 @@ GLuint Model::loadTexture(const std::string& strFilename)
      file.open(strFilename.c_str(), std::ios::in | std::ios::binary);
      if(!file)
      {
-       std::cerr << "Texture file '" << strFilename << "' not found." << std::endl;
+       LOG( ("Texture file '" + strFilename + "' not found.").c_str() );
        return 0;
      }
 
@@ -143,7 +143,7 @@ GLuint Model::loadTexture(const std::string& strFilename)
     pBuffer = new unsigned char[width * height * depth];
     if(pBuffer == 0)
     {
-      std::cerr << "Memory allocation for texture '" << strFilename << "' failed." << std::endl;
+      LOG( ("Memory allocation for texture '" + strFilename + "' failed.").c_str());
       return 0;
     }
 

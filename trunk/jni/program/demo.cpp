@@ -16,16 +16,13 @@
 // Includes                                                                   //
 //----------------------------------------------------------------------------//
 
-#if defined(_MSC_VER) && _MSC_VER <= 0x0600
-#pragma warning(disable : 4786)
-#endif
-
+#include "ARGameProgram.h"
 #include "demo.h"
-#include "tick.h"
 #include "model.h"
 #include "menu.h"
 #include "tga.h"
-#include "SampleUtils.h"
+#include "Utils.h"
+
 
 //----------------------------------------------------------------------------//
 // The one and only Demo instance                                             //
@@ -39,10 +36,10 @@ Demo theDemo;
 
 Demo::Demo()
 {
-  m_strDatapath = Program::getInstance()->mReadPath;
-  m_strCal3D_Datapath = Program::getInstance()->mReadPath;
-  m_width = 640;
-  m_height = 480;
+  m_strDatapath = "";
+  m_strCal3D_Datapath = "";
+  //m_width = 640;
+  //m_height = 480;
   m_bFullscreen = false;
   m_fpsDuration = 0.0f;
   m_fpsFrames = 0;
@@ -51,13 +48,13 @@ Demo::Demo()
   m_mouseY = 0;
   m_tiltAngle = -70.0f;
   m_twistAngle = -45.0f;
-  m_distance = 270.0f;
+  m_distance = 750.0f;
   m_bLeftMouseButtonDown = false;
   m_bRightMouseButtonDown = false;
-  m_lastTick = Tick::getTick();
+  m_lastTick = Utils::getCurrentTime();
   m_currentModel = 0;
   m_bPaused = false;
-	m_bOutputAverageCPUTimeAtExit = false;
+  m_bOutputAverageCPUTimeAtExit = false;
 }
 
 //----------------------------------------------------------------------------//
@@ -121,7 +118,7 @@ bool Demo::loadTexture(const std::string& strFilename, GLuint& pId)
   	 file.open(strFilename.c_str(), std::ios::in | std::ios::binary);
     if(!file)
     {
-      std::cerr << "Texture file '" << strFilename << "' not found." << std::endl;
+      LOG(("Texture file '" + strFilename + "' not found.").c_str());
       return false;
     }
 
@@ -136,7 +133,7 @@ bool Demo::loadTexture(const std::string& strFilename, GLuint& pId)
     // check if an error has happend
     if(!file)
     {
-      std::cerr << "Error while readinf from texture file '" << strFilename << "'." << std::endl;
+      LOG(("Error while readinf from texture file '" + strFilename + "'.").c_str());
       return false;
     }
 
@@ -145,7 +142,7 @@ bool Demo::loadTexture(const std::string& strFilename, GLuint& pId)
     pBuffer = new unsigned char[width * height * depth];
     if(pBuffer == 0)
     {
-      std::cerr << "Memory allocation for texture file '" << strFilename << "' failed." << std::endl;
+      LOG(("Memory allocation for texture file '" + strFilename + "' failed.").c_str());
       return false;
     }
 
@@ -211,7 +208,7 @@ void Demo::nextModel()
 //----------------------------------------------------------------------------//
 // Create the demo                                                            //
 //----------------------------------------------------------------------------//
-
+/*
 bool Demo::onCreate(int argc, char *argv[])
 {
   // show some information
@@ -262,7 +259,7 @@ bool Demo::onCreate(int argc, char *argv[])
 
   return true;
 }
-
+*/
 //----------------------------------------------------------------------------//
 // Handle an idle event                                                       //
 //----------------------------------------------------------------------------//
@@ -271,7 +268,7 @@ void Demo::onIdle()
 {
   // get the current tick value
   unsigned int tick;
-  tick = Tick::getTick();
+  tick = Utils::getCurrentTime();
 
   // calculate the amount of elapsed seconds
   float elapsedSeconds;
@@ -288,7 +285,7 @@ void Demo::onIdle()
 
 	static double start;
 	static double firstTime, lastTime;
-	start = Tick::getTime();
+	start = Utils::getCurrentTime();
 
 	static bool bFirst = true;
 	if (bFirst) {
@@ -305,7 +302,7 @@ void Demo::onIdle()
 			m_vectorModel[m_currentModel]->onUpdate(elapsedSeconds);
   }
 
-	double stop = Tick::getTime();
+	double stop = Utils::getCurrentTime();
 
 	stop -= start;
 	static double cumul = 0;
@@ -321,9 +318,6 @@ void Demo::onIdle()
 
   // current tick will be last tick next round
   m_lastTick = tick;
-
-  // update the screen
-  glutPostRedisplay();
 }
 
 //----------------------------------------------------------------------------//
@@ -332,22 +326,38 @@ void Demo::onIdle()
 
 bool Demo::onInit()
 {
+  m_width = Program::getInstance()->mWidth;
+  m_height = Program::getInstance()->mHeight;
+  m_strDatapath = Program::getInstance()->mReadPath;
+  m_strCal3D_Datapath = Program::getInstance()->mReadPath;
   // load the cursor texture
-  /*std::string strFilename;
-  strFilename = m_strDatapath + "cursor.raw";
+  std::string strFilename;
+  //strFilename = m_strDatapath + "cursor.raw";
 
-  if(!loadTexture(strFilename, m_cursorTextureId)) return false;
+  //if(!loadTexture(strFilename, m_cursorTextureId)) return false;
 
   // load the logo texture
   strFilename = m_strDatapath + "logo.raw";
 
   if(!loadTexture(strFilename, m_logoTextureId)) return false;
 
+  float pos [] = {0,0};
+  float size [] = {128,128};
+  mLogoSprite = new Sprite(pos, size, m_logoTextureId);
+
   // load the fps texture
   strFilename = m_strDatapath + "fps.raw";
 
   if(!loadTexture(strFilename, m_fpsTextureId)) return false;
-*/
+
+  for(int digitId = 2; digitId >= 0; digitId--)
+  {
+      int x = 29 + digitId * 16;
+      float pos [] = {x, 94};
+      float size [] = {16, 16};
+      mFPSSprite[digitId] = new Sprite(pos, size, m_fpsTextureId);
+  }
+
   // initialize models
   Model *pModel;
 
@@ -368,20 +378,15 @@ bool Demo::onInit()
 
   m_vectorModel.push_back(pModel);
 
-
   // initialize menu
   if(!theMenu.onInit(m_width, m_height))
   {
-    std::cerr << "Menu initialization failed!" << std::endl;
+    LOG("Menu initialization failed!");
     return false;
   }
 
   // we're done
-  std::cout << "Initialization done." << std::endl;
-  std::cout << std::endl;
-  std::cout << "Quit the demo by pressing 'q' or ESC" << std::endl;
-  std::cout << std::endl;
-
+  LOG("Initialization done.");
   return true;
 }
 
@@ -411,12 +416,12 @@ void Demo::onMouseButtonDown(int button, int x, int y)
   if(!theMenu.onMouseButtonDown(button, x, y))
   {
     // update mouse button states
-    if(button == GLUT_LEFT_BUTTON)
+    if(button == 0)  //left
     {
       m_bLeftMouseButtonDown = true;
     }
 
-    if(button == GLUT_RIGHT_BUTTON)
+    if(button == 1) //right
     {
       m_bRightMouseButtonDown = true;
     }
@@ -437,12 +442,12 @@ void Demo::onMouseButtonUp(int button, int x, int y)
   if(!theMenu.onMouseButtonUp(button, x, y))
   {
     // update mouse button states
-    if(button == GLUT_LEFT_BUTTON)
+    if(button == 0) //left
     {
       m_bLeftMouseButtonDown = false;
     }
 
-    if(button == GLUT_RIGHT_BUTTON)
+    if(button == 1) //right
     {
       m_bRightMouseButtonDown = false;
     }
@@ -475,14 +480,14 @@ else
     {
       // calculate new angles
       m_twistAngle += (float)(x - m_mouseX);
-      m_tiltAngle -= (float)(y - m_mouseY);
+      m_tiltAngle += (float)(y - m_mouseY);
     }
 
     // update distance
     if(m_bRightMouseButtonDown)
     {
       // calculate new distance
-      m_distance -= (float)(y - m_mouseY) / 3.0f;
+      m_distance -= (float)(y - m_mouseY) ;
       if(m_distance < 0.0f) m_distance = 0.0f;
     }
 /* DEBUG-CODE
@@ -512,7 +517,9 @@ void Demo::onRender()
   // set the projection transformation
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(45.0f, (GLdouble)m_width / (GLdouble)m_height, renderScale * 50.0, renderScale * 5000.0);
+  float ratio = (float) m_width / m_height;
+  glFrustumf(-ratio, ratio, -1, 1, renderScale * 10.0, renderScale * 5000.0);
+  //gluPerspective(45.0f, (GLdouble)m_width / (GLdouble)m_height, renderScale * 50.0, renderScale * 5000.0);
 
   // set the model transformation
   glMatrixMode(GL_MODELVIEW);
@@ -540,7 +547,7 @@ void Demo::onRender()
   // switch to orthogonal projection for 2d stuff
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, (GLdouble)m_width, 0, (GLdouble)m_height, -1.0f, 1.0f);
+  glOrthof(0, (GLfloat)m_width, 0, (GLfloat)m_height, -1.0f, 1.0f);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -550,74 +557,25 @@ void Demo::onRender()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // render menu
-  theMenu.onRender();
+  //theMenu.onRender();
 
-  glEnable(GL_TEXTURE_2D);
+  // render logo
+  mLogoSprite->onRender();
 
-  // render the logo
-  glBindTexture(GL_TEXTURE_2D, m_logoTextureId);
-
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(0, 0);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(128, 0);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(128, 128);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(0, 128);
-  glEnd();
-
-  // render the fps counter
-  glBindTexture(GL_TEXTURE_2D, m_fpsTextureId);
-
-  glBegin(GL_QUADS);
-    int digit;
-    digit = m_fps;
-
-    int digitId;
-    for(digitId = 2; digitId >= 0; digitId--)
-    {
-      int x;
-      x = 29 + digitId * 16;
-      float tx;
-      tx = (float)(digit % 10) * 0.0625f;
-
-      glTexCoord2f(tx, 1.0f);
-      glVertex2i(x, 94);
-      glTexCoord2f(tx + 0.0625f, 1.0f);
-      glVertex2i(x + 16, 94);
-      glTexCoord2f(tx + 0.0625f, 0.0f);
-      glVertex2i(x + 16, 110);
-      glTexCoord2f(tx, 0.0f);
-      glVertex2i(x, 110);
+  // render fps
+  int digit = m_fps;
+  for(int digitId = 2; digitId >= 0; digitId--)
+  {
+      float * tempTextCoord = mFPSSprite[digitId]->getTextureCoord();
+      float tx = (float)(digit % 10) * 0.0625f;
+      tempTextCoord[0] = tx;              tempTextCoord[1] = 1.0f;
+      tempTextCoord[2] = tx + 0.0625f;    tempTextCoord[3] = 1.0f;
+      tempTextCoord[4] = tx;              tempTextCoord[5] = 0.0f;
+      tempTextCoord[6] = tx + 0.0625f;    tempTextCoord[7] = 0.0f;
+      mFPSSprite[digitId]->onRender();
 
       digit /= 10;
-    }
-  glEnd();
-
-  // render the cursor
-  glBindTexture(GL_TEXTURE_2D, m_cursorTextureId);
-
-  glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(m_mouseX, m_mouseY - 32);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(m_mouseX + 32, m_mouseY - 32);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(m_mouseX + 32, m_mouseY);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(m_mouseX, m_mouseY);
-  glEnd();
-
-  glDisable(GL_TEXTURE_2D);
-  glDisable(GL_BLEND);
-
-  // swap the front- and back-buffer
-  glutSwapBuffers();
-
-  // increase frame counter
+  }
   m_fpsFrames++;
 }
 
@@ -628,6 +586,8 @@ void Demo::onRender()
 void Demo::onShutdown()
 {
   // shut the menu down
+  delete [] mFPSSprite;
+  delete mLogoSprite;
   theMenu.onShutdown();
 
   // shut all models down

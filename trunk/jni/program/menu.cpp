@@ -12,13 +12,10 @@
 // Includes                                                                   //
 //----------------------------------------------------------------------------//
 
-#if defined(_MSC_VER) && _MSC_VER <= 0x0600
-#pragma warning(disable : 4786)
-#endif
-
 #include "menu.h"
 #include "demo.h"
 #include "model.h"
+#include "ARGameProgram.h"
 
 //----------------------------------------------------------------------------//
 // The one and only Menu instance                                             //
@@ -207,16 +204,43 @@ bool Menu::isWireframe()
 
 bool Menu::onInit(int width, int height)
 {
+  onResize(width,height);
+
   // load the menu texture
   std::string strFilename;
-  strFilename = theDemo.getDatapath() + "menu.raw";
+  strFilename = ((std::string)Program::getInstance()->mReadPath + "menu.raw");
 
   if(!theDemo.loadTexture(strFilename, m_textureId)) return false;
 
   // load the lodxture
-  strFilename = theDemo.getDatapath() + "lod.raw";
+  strFilename = ((std::string)Program::getInstance()->mReadPath + "lod.raw");
 
   if(!theDemo.loadTexture(strFilename, m_lodTextureId)) return false;
+
+    {
+      float pos [] = {m_lodX, m_lodY};
+      float size [] = {256,32};
+      mLodBase = new Sprite(pos,size, m_lodTextureId);
+      float * tempCoord = mLodBase->getTextureCoord();
+      tempCoord[0] = 0.0f; tempCoord[1] = 1.0f;
+      tempCoord[2] = 1.0f; tempCoord[3] = 1.0f;
+      tempCoord[4] = 0.0f; tempCoord[5] = 0.5f;
+      tempCoord[6] = 1.0f; tempCoord[7] = 0.5f;
+    }
+
+
+    {
+      float lodLevel = theDemo.getModel()->getLodLevel();
+      float pos [] = {m_lodX + 247 - (int)(lodLevel * 200), m_lodY};
+      float size [] = {256 - (247 - (int)(lodLevel * 200)), 32};
+      mLodLevel = new Sprite(pos,size,m_lodTextureId);
+      float * tempCoord = mLodLevel->getTextureCoord();
+      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
+      tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
+      tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
+      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
+
+    }
 
   return true;
 }
@@ -372,7 +396,8 @@ void Menu::onRender()
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_textureId);
 
-  glColor3f(1.0f, 1.0f, 1.0f);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+ /*
   glBegin(GL_QUADS);
     // render the base menu
     glTexCoord2f(0.5f, 1.0f);
@@ -477,39 +502,27 @@ void Menu::onRender()
     }
 
   glEnd();
-
+*/
   // get the current lod level of the model
   float lodLevel;
   lodLevel = theDemo.getModel()->getLodLevel();
 
-  glBindTexture(GL_TEXTURE_2D, m_lodTextureId);
+  glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+    mLodBase->onRender();
+    {
+      float lodLevel = theDemo.getModel()->getLodLevel();
+      mLodLevel->setSize(256 - (247 - (int)(lodLevel * 200)), 32);
+      mLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
+      float * tempCoord = mLodLevel->getTextureCoord();
+      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
+      tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
+      tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
+      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
 
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_QUADS);
-    // render the base lod
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(m_lodX, m_lodY);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(m_lodX + 256, m_lodY);
-    glTexCoord2f(1.0f, 0.5f);
-    glVertex2i(m_lodX + 256, m_lodY + 32);
-    glTexCoord2f(0.0f, 0.5f);
-    glVertex2i(m_lodX, m_lodY + 32);
+      mLodLevel->onRender();
+    }
 
-    // render the current lod level
-    glTexCoord2f((247 - lodLevel * 200) / 256.0f, 0.5f);
-    glVertex2i(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
-    glTexCoord2f(1.0f, 0.5f);
-    glVertex2i(m_lodX + 256, m_lodY);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(m_lodX + 256, m_lodY + 32);
-    glTexCoord2f((247 - lodLevel * 200) / 256.0f, 0.0f);
-    glVertex2i(m_lodX + 247 - (int)(lodLevel * 200), m_lodY + 32);
-
-  glEnd();
-
-  glDisable(GL_TEXTURE_2D);
-
+/*
   // render motion triangle
   if(state == Model::STATE_MOTION)
   {
@@ -538,6 +551,7 @@ void Menu::onRender()
 
     glLineWidth(1.0f);
   }
+  */
 }
 
 //----------------------------------------------------------------------------//
