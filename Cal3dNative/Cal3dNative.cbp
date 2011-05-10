@@ -22,6 +22,28 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="..\jni\inc\Base\ARGameProgram.h" />
+		<Unit filename="..\jni\inc\Base\AndroidWrapper.h" />
+		<Unit filename="..\jni\inc\Base\GameStateManager.h" />
+		<Unit filename="..\jni\inc\Base\NativeProgram.h" />
+		<Unit filename="..\jni\inc\GUI\Shape.h" />
+		<Unit filename="..\jni\inc\GUI\Sprite.h" />
+		<Unit filename="..\jni\inc\GameState\GameState.h" />
+		<Unit filename="..\jni\inc\GameState\RenderState.h" />
+		<Unit filename="..\jni\inc\Utils\Stack.h" />
+		<Unit filename="..\jni\inc\Utils\Texture.h" />
+		<Unit filename="..\jni\inc\Utils\Utils.h" />
+		<Unit filename="..\jni\program\demo.cpp" />
+		<Unit filename="..\jni\program\demo.h" />
+		<Unit filename="..\jni\program\global.h" />
+		<Unit filename="..\jni\program\main.cpp" />
+		<Unit filename="..\jni\program\menu.cpp" />
+		<Unit filename="..\jni\program\menu.h" />
+		<Unit filename="..\jni\program\model.cpp" />
+		<Unit filename="..\jni\program\model.h" />
+		<Unit filename="..\jni\src\Base\ARGameProgram.cpp" />
+		<Unit filename="..\jni\src\Base\AndroidWrapper.cpp" />
+		<Unit filename="..\jni\src\Base\GameStateManager.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

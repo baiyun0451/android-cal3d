@@ -16,6 +16,7 @@
 //----------------------------------------------------------------------------//
 
 #include "global.h"
+#include "Sprite.h"
 
 //----------------------------------------------------------------------------//
 // Forward declarations                                                       //
@@ -55,6 +56,9 @@ protected:
   bool m_bPaused;
 	float m_averageCPUTime;
 	bool m_bOutputAverageCPUTimeAtExit;
+
+	Sprite * mLogoSprite;
+    Sprite * mFPSSprite[3];
 
 // constructors/destructor
 public:

@@ -44,7 +44,13 @@ LOCAL_C_INCLUDES :=	inc	\
 LOCAL_SRC_FILES :=  src/Base/ARGameProgram.cpp	\
 					src/Base/GameStateManager.cpp \
 					src/Base/AndroidWrapper.cpp	\
-					program/model.cpp	 
+					src/GUI/Shape.cpp	\
+					src/GUI/Sprite.cpp	\
+					src/GameState/RenderState.cpp	\
+					program/model.cpp	 \
+					program/menu.cpp	\
+					program/demo.cpp	\
+					program/tga.cpp
 				
 LOCAL_ARM_MODE := arm
 include $(BUILD_SHARED_LIBRARY)

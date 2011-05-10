@@ -16,6 +16,7 @@
 //----------------------------------------------------------------------------//
 
 #include "global.h"
+#include "Sprite.h"
 
 //----------------------------------------------------------------------------//
 // Class declaration                                                          //
@@ -45,6 +46,8 @@ protected:
   bool m_bLight;
   float m_actionTimespan[2];
   float m_nextTimespan;
+  Sprite * mLodBase;
+  Sprite * mLodLevel;
 
 // constructors/destructor
 public:

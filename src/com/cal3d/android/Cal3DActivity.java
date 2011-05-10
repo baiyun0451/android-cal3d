@@ -69,7 +69,7 @@ public class Cal3DActivity extends Activity
         ApplicationInfo appInfo = getApplication().getApplicationInfo();
 		SetReadPath(appInfo.dataDir + "/files/");
 		
-        copyResourceToExternal();
+        //copyResourceToExternal();
 
         // Update the application status to start initializing application
         updateApplicationStatus(APPSTATUS_INIT_APP);

@@ -11,6 +11,10 @@
 #include <GLES/glext.h>
 #include "RenderState.h"
 
+Program * Program::mInstance = 0;
+
+NativeProgram * NewEntity(){	return Program::getInstance();}
+
 Program * Program::getInstance()
 {
 	if(mInstance == NULL)
