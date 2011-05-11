@@ -50,7 +50,7 @@ Menu::Menu()
   m_lodX = 4;
   m_lodY = 4;
   m_bLodMovement = false;
-  mIsInit = false;
+  mIsInited = false;
 }
 
 //----------------------------------------------------------------------------//
@@ -282,7 +282,57 @@ bool Menu::onInit(int width, int height)
         tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - 35.0f / 256.0f;
         tempCoord[6] = 0.125;   tempCoord[7] = 1.0f - 35.0f / 256.0f;
     }
-    mIsInit = true;
+
+    {
+        int state = theDemo.getModel()->getState();
+        int startY, endY;
+        startY = MENUITEM_Y[state];
+        endY = startY + MENUITEM_HEIGHT[state];
+        float pos [] = {m_menuX,m_menuY + startY};
+        float size [] = {128, endY - startY};
+        mSpriteActiveState = new Sprite(pos, size, m_textureId);
+        float * tempCoord = mSpriteActiveState->getTextureCoord();
+        tempCoord[0] = 0.0f;    tempCoord[1] = 1.0f - (float)startY / 256.0f;
+        tempCoord[2] = 0.5f;    tempCoord[3] = 1.0f - (float)startY / 256.0f;
+        tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - (float)endY / 256.0f;
+        tempCoord[6] = 0.5f;    tempCoord[7] = 1.0f - (float)endY / 256.0f;
+    }
+
+    {
+        int startY = MENUITEM_Y[3];
+        int endY = startY + MENUITEM_HEIGHT[3];
+        float pos [] = {m_menuX, m_menuY + startY};
+        float size [] = {128, endY - startY};
+        mSpriteActionTimeSpan1 = new Sprite(pos, size, m_textureId);
+        float * tempCoord = mSpriteActionTimeSpan1->getTextureCoord();
+        tempCoord[0] = 0.0f;    tempCoord[1] = 1.0f - (float)startY / 256.0f;
+        tempCoord[2] = 0.5f;    tempCoord[3] = 1.0f - (float)startY / 256.0f;
+        tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - (float)endY / 256.0f;
+        tempCoord[6] = 0.5f;    tempCoord[7] = 1.0f - (float)endY / 256.0f;
+    }
+    {
+        int startY = MENUITEM_Y[4];
+        int endY = startY + MENUITEM_HEIGHT[4];
+        float pos [] = {m_menuX, m_menuY + startY};
+        float size [] = {128, endY - startY};
+        mSpriteActionTimeSpan2 = new Sprite(pos, size, m_textureId);
+        float * tempCoord = mSpriteActionTimeSpan2->getTextureCoord();
+        tempCoord[0] = 0.0f;    tempCoord[1] = 1.0f - (float)startY / 256.0f;
+        tempCoord[2] = 0.5f;    tempCoord[3] = 1.0f - (float)startY / 256.0f;
+        tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - (float)endY / 256.0f;
+        tempCoord[6] = 0.5f;    tempCoord[7] = 1.0f - (float)endY / 256.0f;
+    }
+    {
+        float pos [] = {m_menuX + 96, m_menuY};
+        float size [] = {32, 35};
+        mSpriteNextTimeSpan = new Sprite(pos, size, m_textureId);
+        float * tempCoord = mSpriteNextTimeSpan->getTextureCoord();
+        tempCoord[0] = 0.375f;  tempCoord[1] = 1.0f;
+        tempCoord[2] = 0.5f;    tempCoord[3] = 1.0f;
+        tempCoord[4] = 0.375f;  tempCoord[5] = 1.0f - 35.0f / 256.0f;
+        tempCoord[6] = 0.5f;    tempCoord[7] = 1.0f - 35.0f / 256.0f;
+    }
+  mIsInited = true;
   return true;
 }
 
@@ -434,9 +484,6 @@ void Menu::onRender()
   int state;
   state = theDemo.getModel()->getState();
 
-  //glEnable(GL_TEXTURE_2D);
-  //glBindTexture(GL_TEXTURE_2D, m_textureId);
-
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   mSpriteBaseMenu->onRender();
 
@@ -446,66 +493,37 @@ void Menu::onRender()
     mSpriteWireFrame->onRender();
   if(m_bSkeleton)
     mSpriteBSkeleton->onRender();
- /*
-  glBegin(GL_QUADS);
-    // render all active states
+
     int startY, endY;
-    startY = MENUITEM_Y[state];
-    endY = startY + MENUITEM_HEIGHT[state];
-
-    glTexCoord2f(0.0f, 1.0f - (float)startY / 256.0f);
-    glVertex2i(m_menuX, m_menuY + startY);
-    glTexCoord2f(0.5f, 1.0f - (float)startY / 256.0f);
-    glVertex2i(m_menuX + 128, m_menuY + startY);
-    glTexCoord2f(0.5f, 1.0f - (float)endY / 256.0f);
-    glVertex2i(m_menuX + 128, m_menuY + endY);
-    glTexCoord2f(0.0f, 1.0f - (float)endY / 256.0f);
-    glVertex2i(m_menuX, m_menuY + endY);
-
+    {
+        startY = MENUITEM_Y[state];
+        endY = startY + MENUITEM_HEIGHT[state];
+        mSpriteActiveState->setSize(128, endY - startY);
+        mSpriteActiveState->setPosition(m_menuX,m_menuY + startY);
+        float * tempCoord = mSpriteActiveState->getTextureCoord();
+        tempCoord[0] = 0.0f;    tempCoord[1] = 1.0f - (float)startY / 256.0f;
+        tempCoord[2] = 0.5f;    tempCoord[3] = 1.0f - (float)startY / 256.0f;
+        tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - (float)endY / 256.0f;
+        tempCoord[6] = 0.5f;    tempCoord[7] = 1.0f - (float)endY / 256.0f;
+        mSpriteActiveState->onRender();
+    }
     if(m_actionTimespan[0] > 0.0f)
     {
-      startY = MENUITEM_Y[3];
-      endY = startY + MENUITEM_HEIGHT[3];
-
-      glTexCoord2f(0.0f, 1.0f - (float)startY / 256.0f);
-      glVertex2i(m_menuX, m_menuY + startY);
-      glTexCoord2f(0.5f, 1.0f - (float)startY / 256.0f);
-      glVertex2i(m_menuX + 128, m_menuY + startY);
-      glTexCoord2f(0.5f, 1.0f - (float)endY / 256.0f);
-      glVertex2i(m_menuX + 128, m_menuY + endY);
-      glTexCoord2f(0.0f, 1.0f - (float)endY / 256.0f);
-      glVertex2i(m_menuX, m_menuY + endY);
+        startY = MENUITEM_Y[3];
+        mSpriteActionTimeSpan1->setPosition(m_menuX, m_menuY + startY);
+        mSpriteActionTimeSpan1->onRender();
     }
-
     if(m_actionTimespan[1] > 0.0f)
     {
-      startY = MENUITEM_Y[4];
-      endY = startY + MENUITEM_HEIGHT[4];
-
-      glTexCoord2f(0.0f, 1.0f - (float)startY / 256.0f);
-      glVertex2i(m_menuX, m_menuY + startY);
-      glTexCoord2f(0.5f, 1.0f - (float)startY / 256.0f);
-      glVertex2i(m_menuX + 128, m_menuY + startY);
-      glTexCoord2f(0.5f, 1.0f - (float)endY / 256.0f);
-      glVertex2i(m_menuX + 128, m_menuY + endY);
-      glTexCoord2f(0.0f, 1.0f - (float)endY / 256.0f);
-      glVertex2i(m_menuX, m_menuY + endY);
+        startY = MENUITEM_Y[4];
+        mSpriteActionTimeSpan2->setPosition(m_menuX, m_menuY + startY);
+        mSpriteActionTimeSpan2->onRender();
     }
-
     if(m_nextTimespan > 0.0f)
     {
-      glTexCoord2f(0.375f, 1.0f);
-      glVertex2i(m_menuX + 96, m_menuY);
-      glTexCoord2f(0.5f, 1.0f);
-      glVertex2i(m_menuX + 128, m_menuY);
-      glTexCoord2f(0.5f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 128, m_menuY + 35);
-      glTexCoord2f(0.375f, 1.0f - 35.0f / 256.0f);
-      glVertex2i(m_menuX + 96, m_menuY + 35);
+        mSpriteNextTimeSpan->onRender();
     }
 
-  glEnd();
-*/
   // get the current lod level of the model
   float lodLevel;
   lodLevel = theDemo.getModel()->getLodLevel();
@@ -519,10 +537,6 @@ void Menu::onRender()
       mSpriteLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
       float * tempCoord = mSpriteLodLevel->getTextureCoord();
 
-/*      tempCoord[2] = (247 - lodLevel * 200) / 256.0f;       tempCoord[3] = 0.5f;
-      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.5f;
-      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.0f;
-      tempCoord[4] = 1.0f;                                  tempCoord[5] = 0.0f;*/
       tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
       tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
       tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
@@ -576,7 +590,7 @@ void Menu::onResize(int width, int height)
   // adjust lod position
   m_lodX = width / 2 - 128;
 
-  if(mIsInit)
+  if(mIsInited)
   {
       float lodLevel = theDemo.getModel()->getLodLevel();
       mSpriteLodBase->setPosition(m_lodX,m_lodY);
@@ -585,6 +599,10 @@ void Menu::onResize(int width, int height)
       mSpriteWireFrame->setPosition(m_menuX + 32,m_menuY);
       mSpriteBLight->setPosition(m_menuX + 64,m_menuY);
       mSpriteBSkeleton->setPosition(m_menuX,m_menuY);
+      mSpriteActiveState->setPosition(m_menuX,m_menuY + MENUITEM_Y[theDemo.getModel()->getState()]);
+      mSpriteActionTimeSpan1->setPosition(m_menuX, m_menuY + MENUITEM_Y[3]);
+      mSpriteActionTimeSpan2->setPosition(m_menuX, m_menuY + MENUITEM_Y[4]);
+      mSpriteNextTimeSpan->setPosition(m_menuX + 96, m_menuY);
   }
 }
 
@@ -600,6 +618,10 @@ void Menu::onShutdown()
     delete mSpriteLodBase;
     delete mSpriteLodLevel;
     delete mSpriteWireFrame;
+    delete mSpriteActiveState;
+    delete mSpriteActionTimeSpan1;
+    delete mSpriteActionTimeSpan2;
+    delete mSpriteNextTimeSpan;
 }
 
 //----------------------------------------------------------------------------//
