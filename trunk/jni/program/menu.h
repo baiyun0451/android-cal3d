@@ -52,7 +52,11 @@ protected:
   Sprite * mSpriteWireFrame;
   Sprite * mSpriteBLight;
   Sprite * mSpriteBSkeleton;
-  bool mIsInit;
+  Sprite * mSpriteActiveState;
+  Sprite * mSpriteActionTimeSpan1;
+  Sprite * mSpriteActionTimeSpan2;
+  Sprite * mSpriteNextTimeSpan;
+  bool mIsInited;
 
 // constructors/destructor
 public:
