@@ -10,17 +10,24 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.pm.ApplicationInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class Cal3DActivity extends Activity
 {
+	public final Handler mHandler = new Handler();
     private static final int APPSTATUS_UNINITED         = -1;
     private static final int APPSTATUS_INIT_APP         = 0;
     private static final int APPSTATUS_INIT_APP_AR      = 2;
@@ -57,6 +64,7 @@ public class Cal3DActivity extends Activity
     protected native void deinitNative();
     
     protected native void SetReadPath(String path);
+    protected TextView mTextView;
     
     /** Called when the activity first starts or the user navigates back to an activity. */
     protected void onCreate(Bundle savedInstanceState)
@@ -64,15 +72,21 @@ public class Cal3DActivity extends Activity
         DebugLog.LOGD("Activity::onCreate");
 
         super.onCreate(savedInstanceState);
+       // setContentView(R.layout.main);
+       // mTextView = (TextView)findViewById(R.id.textbox);
     	initNative();
 
         ApplicationInfo appInfo = getApplication().getApplicationInfo();
 		SetReadPath(appInfo.dataDir + "/files/");
 		
-        copyResourceToExternal();
+		mLoaderRunnable.start();
+		(new LoadResourceTask()).execute();
+		//mLoaderRunnable.stop();
+		
+        //copyResourceToExternal();
 
         // Update the application status to start initializing application
-        updateApplicationStatus(APPSTATUS_INIT_APP);
+        //updateApplicationStatus(APPSTATUS_INIT_APP);
     }  
 
    /** Called when the activity will start interacting with the user.*/
@@ -241,7 +255,8 @@ public class Cal3DActivity extends Activity
 			FileInputStream fIn = new FileInputStream(appInfo.sourceDir);
 			ZipInputStream zIn = new ZipInputStream(new BufferedInputStream(fIn));
 			ZipEntry entry;
-
+			
+			//mLoaderRunnable.start();
 			while((entry = zIn.getNextEntry()) != null)
 			{
 				String name = entry.getName();
@@ -260,6 +275,8 @@ public class Cal3DActivity extends Activity
 							DebugLog.LOGI("File already exist, operation skipped");
 							continue;
 						}
+						mLoaderRunnable.setFilename(name);
+						this.runOnUiThread(mLoaderRunnable);
 						file.getParentFile().mkdirs();
 						file.createNewFile();
 
@@ -276,6 +293,7 @@ public class Cal3DActivity extends Activity
 					}
 				}
 			}
+			//mLoaderRunnable.stop();
 			zIn.close();
 			fIn.close();
 		}
@@ -284,6 +302,7 @@ public class Cal3DActivity extends Activity
 			e.printStackTrace();
 		}
     }
+    
     /** A helper for loading native libraries stored in "libs/armeabi*". */
     public static boolean loadLibrary(String nLibName)
     {
@@ -305,5 +324,55 @@ public class Cal3DActivity extends Activity
         }
         
         return false;
-    }    
+    }  
+    
+    private class LoadResourceTask extends AsyncTask<Void, Integer, Boolean>
+    {
+        protected Boolean doInBackground(Void... params)
+        {
+        	copyResourceToExternal();
+            return true;
+        }
+        
+        protected void onProgressUpdate(Integer... values)
+        {
+        }
+        
+        protected void onPostExecute(Boolean result)
+        { 
+        	mLoaderRunnable.stop();
+            updateApplicationStatus(APPSTATUS_INIT_APP);
+        }
+    }
+
+    
+    LoaderRunnable mLoaderRunnable = new LoaderRunnable(this);
+    
+    public class LoaderRunnable implements Runnable {
+        String mFileName;
+        AlertDialog mAlertDialog;
+        Activity mAC;
+        LoaderRunnable(Activity ac)
+        {
+        	mAC = ac;
+        }
+        public void setFilename(String filename)
+        {
+        	mFileName = filename;
+        }
+        public void start()
+        {
+        	mAlertDialog = new AlertDialog.Builder(mAC).create();
+        	mAlertDialog.setTitle("Resource Loading");
+        	mAlertDialog.setMessage("Please wait");
+        	mAlertDialog.show();
+        }
+        public void run(){
+        	mAlertDialog.setMessage("Creating file - " + mFileName);
+        }
+        public void stop()
+        {
+        	mAlertDialog.hide();
+        }
+    }
 }

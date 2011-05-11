@@ -44,6 +44,9 @@
 		<Unit filename="..\jni\src\Base\ARGameProgram.cpp" />
 		<Unit filename="..\jni\src\Base\AndroidWrapper.cpp" />
 		<Unit filename="..\jni\src\Base\GameStateManager.cpp" />
+		<Unit filename="..\jni\src\GUI\Shape.cpp" />
+		<Unit filename="..\jni\src\GUI\Sprite.cpp" />
+		<Unit filename="..\jni\src\GameState\RenderState.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

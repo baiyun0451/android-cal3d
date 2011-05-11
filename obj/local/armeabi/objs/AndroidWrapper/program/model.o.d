@@ -206,6 +206,7 @@
  /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/cal3d/streamsource.h \
  /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/cal3d/submesh.h \
  /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/program/demo.h \
+ inc/GUI/Sprite.h inc/GUI/Shape.h \
  /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/program/menu.h \
  inc/Utils/Utils.h \
  /cygdrive/c/Library/Android/android-sdk/android-ndk-r5b/platforms/android-8/arch-arm/usr/include/android/log.h
@@ -621,6 +622,10 @@
 /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/cal3d/submesh.h:
 
 /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/program/demo.h:
+
+inc/GUI/Sprite.h:
+
+inc/GUI/Shape.h:
 
 /cygdrive/c/Users/NcJlee/Desktop/Internship/Project/Cal3DonAndroid/jni/program/menu.h:
 

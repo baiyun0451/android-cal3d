@@ -52,6 +52,7 @@ protected:
   Sprite * mSpriteWireFrame;
   Sprite * mSpriteBLight;
   Sprite * mSpriteBSkeleton;
+  bool mIsInit;
 
 // constructors/destructor
 public:

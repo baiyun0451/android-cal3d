@@ -9,7 +9,9 @@
 // Utility for logging:
 #define LOG_TAG    "Cal3D-Native"
 #define LOG(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-
+#define MINN(x,y) ((x > y)?y:x)
+#define MAXX(x,y) ((x > y)?x:y)
+#define CLAMP(x,s,b) MINN(b, MAXX(x, s))
 //return milli seconds
 namespace Utils
 {

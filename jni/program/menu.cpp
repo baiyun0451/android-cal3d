@@ -50,6 +50,7 @@ Menu::Menu()
   m_lodX = 4;
   m_lodY = 4;
   m_bLodMovement = false;
+  mIsInit = false;
 }
 
 //----------------------------------------------------------------------------//
@@ -228,7 +229,6 @@ bool Menu::onInit(int width, int height)
         tempCoord[6] = 1.0f; tempCoord[7] = 0.5f;
     }
 
-
     {
         float lodLevel = theDemo.getModel()->getLodLevel();
         float pos [] = {m_lodX + 247 - (int)(lodLevel * 200), m_lodY};
@@ -282,7 +282,7 @@ bool Menu::onInit(int width, int height)
         tempCoord[4] = 0.0f;    tempCoord[5] = 1.0f - 35.0f / 256.0f;
         tempCoord[6] = 0.125;   tempCoord[7] = 1.0f - 35.0f / 256.0f;
     }
-
+    mIsInit = true;
   return true;
 }
 
@@ -519,10 +519,15 @@ void Menu::onRender()
       mSpriteLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
       float * tempCoord = mSpriteLodLevel->getTextureCoord();
 
-      tempCoord[2] = (247 - lodLevel * 200) / 256.0f;       tempCoord[3] = 0.5f;
+/*      tempCoord[2] = (247 - lodLevel * 200) / 256.0f;       tempCoord[3] = 0.5f;
       tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.5f;
       tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.0f;
-      tempCoord[4] = 1.0f;                                  tempCoord[5] = 0.0f;
+      tempCoord[4] = 1.0f;                                  tempCoord[5] = 0.0f;*/
+      tempCoord[0] = (247 - lodLevel * 200) / 256.0f;       tempCoord[1] = 0.5f;
+      tempCoord[2] = 1.0f;                                  tempCoord[3] = 0.5f;
+      tempCoord[4] = (247 - lodLevel * 200) / 256.0f;       tempCoord[5] = 0.0f;
+      tempCoord[6] = 1.0f;                                  tempCoord[7] = 0.0f;
+
 
       mSpriteLodLevel->onRender();
     }
@@ -570,6 +575,17 @@ void Menu::onResize(int width, int height)
 
   // adjust lod position
   m_lodX = width / 2 - 128;
+
+  if(mIsInit)
+  {
+      float lodLevel = theDemo.getModel()->getLodLevel();
+      mSpriteLodBase->setPosition(m_lodX,m_lodY);
+      mSpriteLodLevel->setPosition(m_lodX + 247 - (int)(lodLevel * 200), m_lodY);
+      mSpriteBaseMenu->setPosition(m_menuX,m_menuY);
+      mSpriteWireFrame->setPosition(m_menuX + 32,m_menuY);
+      mSpriteBLight->setPosition(m_menuX + 64,m_menuY);
+      mSpriteBSkeleton->setPosition(m_menuX,m_menuY);
+  }
 }
 
 //----------------------------------------------------------------------------//
