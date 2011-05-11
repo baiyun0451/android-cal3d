@@ -420,13 +420,16 @@ void Model::renderMesh(bool bWireframe, bool bLight)
 
         // set the material ambient color
         pCalRenderer->getAmbientColor(&meshColor[0]);
-        materialColor[0] = meshColor[0] / 255.0f;  materialColor[1] = meshColor[1] / 255.0f; materialColor[2] = meshColor[2] / 255.0f; materialColor[3] = meshColor[3] / 255.0f;
-        glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
+        materialColor[0] = CLAMP(meshColor[0] / 255.0f,0,1);  materialColor[1] = CLAMP(meshColor[1] / 255.0f,0,1);
+	    materialColor[2] = CLAMP(meshColor[2] / 255.0f,0,1);  materialColor[3] = CLAMP(meshColor[3] / 255.0f,0,1);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialColor);
 
         // set the material diffuse color
         pCalRenderer->getDiffuseColor(&meshColor[0]);
-        materialColor[0] = meshColor[0] / 255.0f;  materialColor[1] = meshColor[1] / 255.0f; materialColor[2] = meshColor[2] / 255.0f; materialColor[3] = meshColor[3] / 255.0f;
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
+
+        materialColor[0] = CLAMP(meshColor[0] / 255.0f,0,1);  materialColor[1] = CLAMP(meshColor[1] / 255.0f,0,1);
+        materialColor[2] = CLAMP(meshColor[2] / 255.0f,0,1);  materialColor[3] = 1;//CLAMP(meshColor[3] / 255.0f,0,1);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialColor);
 
         // set the vertex color if we have no lights
         if(!bLight)
@@ -437,12 +440,12 @@ void Model::renderMesh(bool bWireframe, bool bLight)
         // set the material specular color
         pCalRenderer->getSpecularColor(&meshColor[0]);
         materialColor[0] = meshColor[0] / 255.0f;  materialColor[1] = meshColor[1] / 255.0f; materialColor[2] = meshColor[2] / 255.0f; materialColor[3] = meshColor[3] / 255.0f;
-        glMaterialfv(GL_FRONT, GL_SPECULAR, materialColor);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialColor);
 
         // set the material shininess factor
         float shininess;
         shininess = 50.0f; //TODO: pCalRenderer->getShininess();
-        glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shininess);
 
         // get the transformed vertices of the submesh
         static float meshVertices[30000][3];

@@ -576,6 +576,23 @@ void Demo::onRender()
 
       digit /= 10;
   }
+    /*      int error = glGetError();
+    if(error == GL_NO_ERROR)
+        LOG("No Error");
+    else if(error == GL_INVALID_ENUM)
+        LOG("Invalid enum");
+    else if(error == GL_INVALID_VALUE)
+        LOG("Invalid value");
+    else if(error == GL_INVALID_OPERATION)
+        LOG("Invalid operation");
+    else if(error == GL_STACK_OVERFLOW)
+        LOG("overflow");
+    else if(error == GL_STACK_UNDERFLOW)
+        LOG("underflow");
+    else if(error == GL_OUT_OF_MEMORY)
+        LOG("out of memory");
+    else
+        LOG("Unknown error");*/
   m_fpsFrames++;
 }
 

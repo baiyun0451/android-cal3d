@@ -81,9 +81,9 @@ void Sprite::setColor(float color[4])
 void Sprite::setPosition(float x, float y)
 {
     mVertex[0] = x;              mVertex[1] = y;              mVertex[2] = 0;
-    mVertex[3] = x;              mVertex[4] = y + mSize[1];   mVertex[5] = 0;
-    mVertex[6] = x + mSize[0];   mVertex[7] = y;              mVertex[8] = 0;
-    mVertex[9] = mVertex[6];     mVertex[10] = mVertex[4];    mVertex[11] = 0;
+    mVertex[3] = x + mSize[0];   mVertex[4] = y;              mVertex[5] = 0;
+    mVertex[6] = x;              mVertex[7] = y + mSize[1];   mVertex[8] = 0;
+    mVertex[9] = mVertex[3];     mVertex[10] = mVertex[7];    mVertex[11] = 0;
 }
 void Sprite::setSize(float x, float y)
 {
