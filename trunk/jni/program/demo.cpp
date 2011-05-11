@@ -375,8 +375,42 @@ bool Demo::onInit()
     LOG("Model initialization failed! (cally)");
     return false;
   }
+  m_vectorModel.push_back(pModel);
+
+  // load 'skeleton' model
+  LOG("Loading 'skeleton' model ...");
+
+  pModel = new Model();
+
+  if (m_strCal3D_Datapath != "")
+    pModel->setPath( m_strCal3D_Datapath + "/" + "skeleton/" );
+
+  if(!pModel->onInit(m_strDatapath + "skeleton.cfg"))
+  {
+    delete pModel;
+    LOG("Model initialization failed! (skeleton)");
+    return false;
+  }
 
   m_vectorModel.push_back(pModel);
+
+  // load 'paladin' model
+  LOG("Loading 'paladin' model ...");
+
+  pModel = new Model();
+
+  if (m_strCal3D_Datapath != "")
+    pModel->setPath( m_strCal3D_Datapath + "/" + "paladin/" );
+
+  if(!pModel->onInit(m_strDatapath + "paladin.cfg"))
+  {
+    delete pModel;
+    LOG("Model initialization failed! (paladin)");
+    return false;
+  }
+
+  m_vectorModel.push_back(pModel);
+
 
   // initialize menu
   if(!theMenu.onInit(m_width, m_height))
@@ -515,6 +549,11 @@ void Demo::onRender()
   renderScale = m_vectorModel[m_currentModel]->getRenderScale();
 
   // set the projection transformation
+  //flip the texture on y axis
+  glMatrixMode(GL_TEXTURE);
+  glLoadIdentity();
+  glScalef(1,-1,1);
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   float ratio = (float) m_width / m_height;
@@ -545,6 +584,11 @@ void Demo::onRender()
   m_vectorModel[m_currentModel]->onRender();
 
   // switch to orthogonal projection for 2d stuff
+  //flip the texture on y axis
+  glMatrixMode(GL_TEXTURE);
+  glLoadIdentity();
+  glScalef(1,1,1);
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrthof(0, (GLfloat)m_width, 0, (GLfloat)m_height, -1.0f, 1.0f);

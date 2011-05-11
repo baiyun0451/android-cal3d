@@ -3,6 +3,7 @@
 #include "demo.h"
 #include "menu.h"
 #include "Utils.h"
+#include "tga.h"
 
 //----------------------------------------------------------------------------//
 // Static member variables initialization                                     //
@@ -167,6 +168,39 @@ GLuint Model::loadTexture(const std::string& strFilename)
     delete [] pBuffer;
 
   }
+  else if (stricmp(strrchr(strFilename.c_str(),'.'),".tga")==0)
+  {
+
+    CTga *Tga;
+    Tga = new CTga();
+
+    //Note: This will always make a 32-bit texture
+    if(Tga->ReadFile(strFilename.c_str())==0)
+    {
+      Tga->Release();
+      return false;
+    }
+
+    //Bind texture
+    int width = Tga->GetSizeX();
+    int height = Tga->GetSizeY();
+    int depth = Tga->Bpp() / 8;
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glGenTextures(1, &pId);
+
+    glBindTexture(GL_TEXTURE_2D, pId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, ((depth == 3) ? GL_RGB : GL_RGBA), width, height, 0, ((depth == 3) ? GL_RGB : GL_RGBA) , GL_UNSIGNED_BYTE, (char*)Tga->GetPointer() );
+
+	 Tga->Release();
+  }
+
   return pId;
 }
 

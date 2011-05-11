@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -22,8 +21,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class Cal3DActivity extends Activity
 {
@@ -64,7 +61,6 @@ public class Cal3DActivity extends Activity
     protected native void deinitNative();
     
     protected native void SetReadPath(String path);
-    protected TextView mTextView;
     
     /** Called when the activity first starts or the user navigates back to an activity. */
     protected void onCreate(Bundle savedInstanceState)
